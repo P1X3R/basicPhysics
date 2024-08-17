@@ -1,6 +1,6 @@
 #include "raylib.h"
 
-#define GRAVITY 9.8
+#define GRAVITY .098f
 
 struct Player {
   Rectangle body;
@@ -10,18 +10,25 @@ struct Player {
 
 int main(void) {
   // Initialize
-  InitWindow(800, 450, "raylib [core] example - basic window");
+  InitWindow(800, 450, "Basic physics");
   SetTargetFPS(60);
 
   struct Player player;
-  player.body = (Rectangle){GetScreenWidth() / 4.0f, GetScreenHeight() / 2.0f,
-                            10.0f, 10.0f};
+  player.body =
+      (Rectangle){GetScreenWidth() / 4.f, GetScreenHeight() / 2.f, 10.f, 10.f};
   player.speed = 4;
+
+  Rectangle ground = {0.f, GetScreenHeight(), GetScreenWidth(), 1.f};
 
   // Game loop
   while (!WindowShouldClose()) {
     // Event handling
-    player.body.y += GRAVITY;
+    // Make the player fall
+    if (!CheckCollisionRecs(player.body, ground)) {
+      player.velocity.y += GRAVITY;
+      player.body.y += player.velocity.y;
+    } else
+      player.velocity.y = 0.f;
 
     // Drawing
     BeginDrawing();
