@@ -6,6 +6,7 @@ struct Player {
   Rectangle body;
   Vector2 velocity;
   float speed;
+  float friction;
 };
 
 int main(void) {
@@ -17,7 +18,8 @@ int main(void) {
   player.body =
       (Rectangle){GetScreenWidth() / 4.f, GetScreenHeight() / 2.f, 10.f, 10.f};
   player.velocity = (Vector2){0.f, 0.f};
-  player.speed = 1.f;
+  player.speed = .2f;
+  player.friction = player.speed / 2;
 
   Rectangle ground = {0.f, GetScreenHeight() - 20.f, GetScreenWidth(), 1.f};
 
@@ -27,9 +29,23 @@ int main(void) {
     // Make the player fall
     if (!CheckCollisionRecs(player.body, ground)) {
       player.velocity.y += GRAVITY;
-      player.body.y += player.velocity.y;
     } else
       player.velocity.y = 0.f;
+
+    // Player horizontal movement
+    if (IsKeyDown(KEY_A))
+      player.velocity.x -= player.speed;
+    if (IsKeyDown(KEY_D))
+      player.velocity.x += player.speed;
+
+    // Friction
+    if (player.velocity.x > 0.f)
+      player.velocity.x -= player.friction;
+    if (player.velocity.x < 0.f)
+      player.velocity.x += player.friction;
+
+    player.body.x += player.velocity.x;
+    player.body.y += player.velocity.y;
 
     // Drawing
     BeginDrawing();
