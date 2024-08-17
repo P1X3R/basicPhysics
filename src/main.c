@@ -1,6 +1,6 @@
 #include "raylib.h"
 
-#define GRAVITY .098f
+#define GRAVITY .1f
 
 struct Player {
   Rectangle body;
@@ -16,9 +16,10 @@ int main(void) {
   struct Player player;
   player.body =
       (Rectangle){GetScreenWidth() / 4.f, GetScreenHeight() / 2.f, 10.f, 10.f};
-  player.speed = 4;
+  player.velocity = (Vector2){0.f, 0.f};
+  player.speed = 1.f;
 
-  Rectangle ground = {0.f, GetScreenHeight(), GetScreenWidth(), 1.f};
+  Rectangle ground = {0.f, GetScreenHeight() - 20.f, GetScreenWidth(), 1.f};
 
   // Game loop
   while (!WindowShouldClose()) {
@@ -34,6 +35,7 @@ int main(void) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawRectangleRec(player.body, BLACK);
+    DrawRectangleRec(ground, GREEN);
     EndDrawing();
   }
 
